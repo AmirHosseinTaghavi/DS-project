@@ -1,2 +1,2 @@
-# DS-project
+# HPC-project
 
