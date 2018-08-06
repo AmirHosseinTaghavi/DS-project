@@ -12,7 +12,7 @@ string getPort(string ip);
 Computing::Computing(int procCount, int myRank){
 	setMyRank(myRank);
 	setProcCount(procCount);
-	ifstream pfile("../myLib/procIPs.txt");
+	ifstream pfile("procIPs.txt");
 	string ip;
 	while(getline(pfile, ip)){
 		if(ip.size()>0)
