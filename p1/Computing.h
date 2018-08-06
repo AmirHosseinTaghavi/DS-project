@@ -14,12 +14,14 @@ class Computing {
 		int myRank;
 		int procCount;
 		int *myPart;
-		vector <string> procIPs;		
+		vector <string> procIPs;
 
 	public:
 		Computing(int procCount, int myRank);
 		void distribute(int *input, int count);
-		int access(int index);		
+		void getMyShare();		
+		int access(int index);
+		void ready4Req();		
 		int getInputSize();
 		int getMyRank();
 		int getProcCount();
