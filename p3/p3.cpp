@@ -1,8 +1,7 @@
-#include<iostream>
-#include "Computing.h"
+#include <iostream>
 #include <string>
 
-using namespace std;
+#include "myLib/Computing.h"
  
 int main(){
 	
