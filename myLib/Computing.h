@@ -11,25 +11,26 @@
 class Computing {
 	
 	public:
-		Computing(int procCount, int myRank);
+		Computing(int procCount, int myRank, int inputSize);
+		Computing(const std::string &ip);
 		int getInputSize();
 		int getMyRank();
 		int getProcCount();
-		std::unique_ptr<int[]> getMyPart();
+		std::string getDataIP();
 		void setInputSize(int size);
 		void setMyRank(int rnk);
 		void setProcCount(int cnt);
-		void distribute(const int *input, int count);
-		void getMyShare();		
+		void setDataIP(const std::string &ip);		
 		std::unique_ptr<int[]> access(int index, int count);
 		int access(int index);
-		void ready4Req();		
+		void ready4AccReq();
+		void ready4DataReq(std::unique_ptr<int[]> myPart);
 	
 	private:
 		int inputSize;
 		int myRank;
 		int procCount;
-		std::unique_ptr<int[]> myPart;
+		std::string myDataIP;
 		std::vector <std::string> procIPs;
 
 };
