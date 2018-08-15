@@ -2,14 +2,17 @@
 #include <string>
 
 #include "myLib/Computing.h"
+#include "myLib/Data.h"
  
+const std::string MY_IP = "tcp://localhost:5552";
+
 int main(){
 	
-	Computing comp(3, 2);
+	Data d(MY_IP);
+	d.getMyShare();	
 	
-	comp.getMyShare();
-
-	comp.ready4Req();
+	Computing c(MY_IP);
+	c.ready4DataReq(d.getMyPart());
 
 	return 0;
 }

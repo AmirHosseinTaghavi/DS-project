@@ -1,3 +1,0 @@
-tcp://localhost:5550
-tcp://localhost:5551
-tcp://localhost:5552
