@@ -1,0 +1,3 @@
+tcp://localhost:5540
+tcp://localhost:5541
+tcp://localhost:5542
