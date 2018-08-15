@@ -2,4 +2,4 @@
 
 Compile each process with g++ :
 
-g++ -o p3 p3.cpp ../myLib/Computing.cpp -I ../ -lzmq
+g++ -o p11 p11.cpp ../myLib/Computing.cpp ../myLib/Data.cpp -I ../ -lzmq
