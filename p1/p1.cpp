@@ -4,7 +4,7 @@
 #include "myLib/Computing.h"
 #include "myLib/Data.h"
 
-const std::string MY_IP = "tcp://localhost:5550"; 
+const std::string MY_IP = "tcp://192.168.56.101:5550"; 
 
 int main()
 {
