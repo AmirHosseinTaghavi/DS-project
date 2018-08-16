@@ -38,6 +38,7 @@ namespace helperNS1 {
 	}	
 }
 
+//constructor for computing process(p11)
 Data::Data(int procCount){
 	setProcCount(procCount);
 	std::ifstream pfile("dataProcIPs.txt");
@@ -49,10 +50,12 @@ Data::Data(int procCount){
 	pfile.close();
 }
 
+//constructor fot data processes
 Data::Data(const std::string &ip){
 	setMyIP(ip);
 }
 
+//Distribute input among data processes
 void Data::distribute(const int *input, int count){
 	std::cout << "Distribute Input Data:" << std::endl;	
 	setInputSize(count);
@@ -62,6 +65,7 @@ void Data::distribute(const int *input, int count){
 	}	
 }
 
+//use in data process and process will be ready for geting its part
 void Data::getMyShare(){	
 	zmq::context_t context (1);
     zmq::socket_t socket (context, ZMQ_REP);
