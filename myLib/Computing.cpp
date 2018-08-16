@@ -8,7 +8,7 @@
 #include <zmq.hpp>
  
 namespace helperNS {
-
+	//use in computing process(p11) and requests to other computing processes
 	int reqRep(const std::vector<std::string> &procIPs, int ownerRnk, int index){
 		zmq::context_t context (1);
 		zmq::socket_t socket (context, ZMQ_REQ);
@@ -24,6 +24,7 @@ namespace helperNS {
 		return stoi(d);			
 	}
 
+	//use in computing process and requests to data process
 	int reqRepMyData(const std::string &ip, int index){
 		zmq::context_t context (1);
 		zmq::socket_t socket (context, ZMQ_REQ);
@@ -45,6 +46,7 @@ namespace helperNS {
 	}	
 }
 
+//Constructor for Computing processes
 Computing::Computing(int procCount, int myRank, int inputSize){
 	setMyRank(myRank);
 	setProcCount(procCount);
@@ -66,11 +68,12 @@ Computing::Computing(int procCount, int myRank, int inputSize){
 	dpfile.close();
 }
 
-
+//Constructor for Data processes
 Computing::Computing(const std::string &ip){
 	setDataIP(ip);
 }
 
+//access multiple elements
 std::unique_ptr<int[]> Computing::access(int index, int count){
 	int eachShare = inputSize/procCount;
 	std::unique_ptr<int[]> reqedPart(new int[count]);	
@@ -91,6 +94,7 @@ std::unique_ptr<int[]> Computing::access(int index, int count){
 	return std::move(reqedPart);
 }
 
+//access one element
 int Computing::access(int index){
 	std::cout << "This Process Wants to Access " << index << "th Element of Input" << std::endl;	
 	int eachShare = getInputSize()/getProcCount();
@@ -106,6 +110,10 @@ int Computing::access(int index){
 	}	
 }	
 
+/*This method can be used in computing processes. When this method is called in a process, That process will
+listen for access requests and if it receives any index, this method calculates A correct index of its node 
+and then request it from data process in its node. Finally, it returns Correct data to the process that called 
+access method.*/
 void Computing::ready4AccReq(){
 	std::cout << "This Process is Ready for Access Requests..." << std::endl;
 	int eachShare = getInputSize() / getProcCount();
@@ -130,6 +138,9 @@ void Computing::ready4AccReq(){
     }
 }
 
+/*This method can be used in data processes. When this method is called in a process, That process will
+listen for data requests and if it receives any index, this method returns data of its part to the computing
+process that called reqRepMyData function.*/
 void Computing::ready4DataReq(std::unique_ptr<int[]> myPart){
 	std::cout << "This Process is Ready for Data Requests..." << std::endl;
 	zmq::context_t context1 (1);
