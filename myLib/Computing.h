@@ -12,7 +12,6 @@ class Computing {
 	
 	public:
 		Computing(int procCount, int myRank, int inputSize);
-		Computing(const std::string &ip);
 		int getInputSize();
 		int getMyRank();
 		int getProcCount();

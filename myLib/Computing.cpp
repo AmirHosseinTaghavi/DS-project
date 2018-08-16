@@ -68,11 +68,6 @@ Computing::Computing(int procCount, int myRank, int inputSize){
 	dpfile.close();
 }
 
-//Constructor for Data processes
-Computing::Computing(const std::string &ip){
-	setDataIP(ip);
-}
-
 //access multiple elements
 std::unique_ptr<int[]> Computing::access(int index, int count){
 	int eachShare = inputSize/procCount;
