@@ -138,31 +138,6 @@ void Computing::ready4AccReq(){
     }
 }
 
-/*This method can be used in data processes. When this method is called in a process, That process will
-listen for data requests and if it receives any index, this method returns data of its part to the computing
-process that called reqRepMyData function.*/
-void Computing::ready4DataReq(std::unique_ptr<int[]> myPart){
-	std::cout << "This Process is Ready for Data Requests..." << std::endl;
-	zmq::context_t context1 (1);
-    zmq::socket_t socket1 (context1, ZMQ_REP);
-	std::string prefix = "tcp://*:";
-	std::string port = helperNS::getPort(getDataIP());    
-	socket1.bind (prefix + port);	
-    while (true) {
-        zmq::message_t req;
-        socket1.recv (&req);
-		std::string d = std::string(static_cast<char*>(req.data()), req.size());
-		int index = stoi(d);
-		std::cout << "my " << index << "th Element is Requested" << std::endl;
-		int data = myPart[index];
-		std::string dataStr = std::to_string(data);		
-        zmq::message_t reply (5);
-        memcpy (reply.data (), dataStr.c_str(), 5);
-		std::cout << "Reply " << data << std::endl;
-        socket1.send (reply);
-    }
-}
-
 int Computing::getInputSize(){return inputSize;}
 int Computing::getMyRank(){return myRank;}
 int Computing::getProcCount(){return procCount;}

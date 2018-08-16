@@ -24,7 +24,6 @@ class Computing {
 		std::unique_ptr<int[]> access(int index, int count);
 		int access(int index);
 		void ready4AccReq();
-		void ready4DataReq(std::unique_ptr<int[]> myPart);
 	
 	private:
 		int inputSize;

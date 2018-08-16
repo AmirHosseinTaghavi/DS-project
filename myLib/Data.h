@@ -24,6 +24,7 @@ class Data {
 		void setMyIP(const std::string &ip);
 		void distribute(const int *input, int count);
 		void getMyShare();		
+		void ready4DataReq();
 	
 	private:
 		int inputSize;
