@@ -15,11 +15,9 @@ class Computing {
 		int getInputSize();
 		int getMyRank();
 		int getProcCount();
-		std::string getDataIP();
 		void setInputSize(int size);
 		void setMyRank(int rnk);
 		void setProcCount(int cnt);
-		void setDataIP(const std::string &ip);		
 		std::unique_ptr<int[]> access(int index, int count);
 		int access(int index);
 		void ready4AccReq();
@@ -28,7 +26,6 @@ class Computing {
 		int inputSize;
 		int myRank;
 		int procCount;
-		std::string myDataIP;
 		std::vector <std::string> procIPs;
 
 };

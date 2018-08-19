@@ -1,4 +1,5 @@
 #include "myLib/Computing.h"
+#include "myLib/DataAdaptor.h"
 
 #include <fstream>
 #include <memory>
@@ -42,26 +43,19 @@ Computing::Computing(int procCount, int myRank, int inputSize){
 			procIPs.push_back(ip);
 	}	
 	pfile.close();
-
-	std::ifstream dpfile("myDataIP.txt");
-	std::string dip = "";
-	while(getline(dpfile, dip)){
-		if(dip.size()>0)
-			setDataIP(dip);
-	}	
-	dpfile.close();
 }
 
 //access multiple elements
 std::unique_ptr<int[]> Computing::access(int index, int count){
 	int eachShare = inputSize/procCount;
-	std::unique_ptr<int[]> reqedPart(new int[count]);	
+	std::unique_ptr<int[]> reqedPart(new int[count]);
+	DataAdaptor da;	
 	for(int i=0; i<count; ++i){
 		std::cout << "This Process Wants to Access " << index << "th Element of Input" << std::endl;	
 		int dataOwner = index/eachShare;
 		if(dataOwner == myRank){
 			std::cout << "Owner of Requested Element is This Process" << std::endl; 
-			reqedPart[i] = helperNS::reqRepMyData(getDataIP(), index);			
+			reqedPart[i] = da.reqRepMyData(index);			
 		}else{
 			std::cout << "Owner of Requested Element is process: " << dataOwner << std::endl;
 			int data = helperNS::reqRep(procIPs, dataOwner, index);
@@ -80,8 +74,8 @@ int Computing::access(int index){
 	int dataOwner = index/eachShare;
 	if(dataOwner == myRank){
 		std::cout << "Owner of Requested Element is This Process" << std::endl;
-		DataAdaptor da(); 
-		return da.reqRepMyData();
+		DataAdaptor da; 
+		return da.reqRepMyData(index);
 	}else{
 		std::cout << "Owner of Requested Element is process: " << dataOwner << std::endl;
 		int data = helperNS::reqRep(procIPs, dataOwner, index);
@@ -109,7 +103,7 @@ void Computing::ready4AccReq(){
 		int index = stoi(d);
 		std::cout << index << "th Element is Requested" << std::endl;
 		int myIndex = index % eachShare;
-		DataAdaptor da();
+		DataAdaptor da;
 		int data = da.reqRepMyData(myIndex);
 		std::string dataStr = std::to_string(data);		
         zmq::message_t reply (5);
@@ -122,7 +116,6 @@ void Computing::ready4AccReq(){
 int Computing::getInputSize(){return inputSize;}
 int Computing::getMyRank(){return myRank;}
 int Computing::getProcCount(){return procCount;}
-std::string Computing::getDataIP(){return myDataIP;}
 void Computing::setInputSize(int size){
 	inputSize = size;
 }
@@ -131,7 +124,4 @@ void Computing::setMyRank(int rnk){
 }
 void Computing::setProcCount(int cnt){
 	procCount = cnt;
-}
-void Computing::setDataIP(const std::string &ip){
-	myDataIP = ip;
 }
