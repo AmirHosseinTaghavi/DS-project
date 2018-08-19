@@ -4,6 +4,7 @@
 
 #include "myLib/Computing.h"
 #include "myLib/Data.h"
+#include "myLib/DataAdaptor.h"
 
 void sumMatrices(Computing &c, int row, int col); 
 
@@ -21,7 +22,8 @@ int main()
 	Data d(3);
 	d.distribute(inputArr, 24);
 
-	Computing c(3, 0, 24);
+	DataAdaptor da(3, 0, 24);	
+	Computing c(da);
 	sumMatrices(c, 3, 4);
 	/*std::unique_ptr<int[]> p;	
 	p = c.access(9,6);
