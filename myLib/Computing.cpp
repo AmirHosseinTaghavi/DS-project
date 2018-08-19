@@ -24,22 +24,6 @@ namespace helperNS {
 		return stoi(d);			
 	}
 
-	//use in computing process and requests to data process
-	int reqRepMyData(const std::string &ip, int index){
-		zmq::context_t context (1);
-		zmq::socket_t socket (context, ZMQ_REQ);
-		std::cout << "Request Element to my Data Process " << std::endl;
-		socket.connect (ip);
-		zmq::message_t request (2);		
-		std::string str = std::to_string(index);
-		memcpy (request.data (), str.c_str(), 2);
-		socket.send (request);
-		zmq::message_t reply;
-		socket.recv (&reply);
-		std::string d = std::string(static_cast<char*>(reply.data()), reply.size());
-		return stoi(d);	
-	}
-
 	std::string getPort(const std::string &ip){
 		int colonPos = ip.rfind(':');
 		return ip.substr(colonPos+1, 4);
@@ -95,8 +79,9 @@ int Computing::access(int index){
 	int eachShare = getInputSize()/getProcCount();
 	int dataOwner = index/eachShare;
 	if(dataOwner == myRank){
-		std::cout << "Owner of Requested Element is This Process" << std::endl; 
-		return helperNS::reqRepMyData(getDataIP(), index);
+		std::cout << "Owner of Requested Element is This Process" << std::endl;
+		DataAdaptor da(); 
+		return da.reqRepMyData();
 	}else{
 		std::cout << "Owner of Requested Element is process: " << dataOwner << std::endl;
 		int data = helperNS::reqRep(procIPs, dataOwner, index);
@@ -124,7 +109,8 @@ void Computing::ready4AccReq(){
 		int index = stoi(d);
 		std::cout << index << "th Element is Requested" << std::endl;
 		int myIndex = index % eachShare;
-		int data = helperNS::reqRepMyData(getDataIP(), myIndex);
+		DataAdaptor da();
+		int data = da.reqRepMyData(myIndex);
 		std::string dataStr = std::to_string(data);		
         zmq::message_t reply (5);
         memcpy (reply.data (), dataStr.c_str(), 5);
