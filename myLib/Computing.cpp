@@ -27,26 +27,16 @@ Computing::Computing(DataAdaptor da){
 }
 
 //access multiple elements
-/*std::unique_ptr<int[]> Computing::access(int index, int count){
-	int eachShare = inputSize/procCount;
+std::unique_ptr<int[]> Computing::access(int index, int count){
+	//int eachShare = inputSize/procCount;
 	std::unique_ptr<int[]> reqedPart(new int[count]);
-	DataAdaptor da;	
 	for(int i=0; i<count; ++i){
 		std::cout << "This Process Wants to Access " << index << "th Element of Input" << std::endl;	
-		int dataOwner = index/eachShare;
-		if(dataOwner == myRank){
-			std::cout << "Owner of Requested Element is This Process" << std::endl; 
-			reqedPart[i] = da.reqRepMyData(index);			
-		}else{
-			std::cout << "Owner of Requested Element is process: " << dataOwner << std::endl;
-			int data = helperNS::reqRep(procIPs, dataOwner, index);
-			std::cout << "Data Owner Replied -> " << data << std::endl;
-			reqedPart[i] = data;
-		}	
+		reqedPart[i] = adaptor.get(index);	
 		++index;
 	}	
 	return std::move(reqedPart);
-}*/
+}
 
 //access one element
 int Computing::access(int index){
