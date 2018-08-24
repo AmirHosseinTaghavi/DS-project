@@ -51,13 +51,6 @@ DataAdaptor::DataAdaptor(int procCount, int myRank, int inputSize){
 			procIPs.push_back(ip);
 	}	
 	pfile.close();
-	std::ifstream dpfile("myDataIP.txt");
-	std::string dip = "";
-	while(getline(dpfile, dip)){
-		if(dip.size()>0)
-			setDataIP(dip);
-	}	
-	dpfile.close();
 	std::string sharedName = "data";
 	setShdMem(sharedName);
 }
@@ -89,7 +82,6 @@ int DataAdaptor::calcGet(int index){
 	return DAHelperNS::getSharedData(myIndex, getShdMem());
 }
 
-std::string DataAdaptor::getDataIP(){return dataIP;}
 int DataAdaptor::getInputSize(){return inputSize;}
 int DataAdaptor::getMyRank(){return myRank;}
 int DataAdaptor::getProcCount(){return procCount;}
@@ -102,9 +94,6 @@ void DataAdaptor::setMyRank(int rnk){
 }
 void DataAdaptor::setProcCount(int cnt){
 	procCount = cnt;
-}
-void DataAdaptor::setDataIP(const std::string &str){
-	dataIP = str;
 }
 void DataAdaptor::setShdMem(std::string str){
 	shdMemStr = str;

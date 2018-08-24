@@ -14,7 +14,6 @@ class DataAdaptor {
 		DataAdaptor(int procCount, int myRank, int inputSize);
 		DataAdaptor();
 		~DataAdaptor();
-		std::string getDataIP();
 		int getInputSize();
 		int getMyRank();
 		int getProcCount();
@@ -23,7 +22,6 @@ class DataAdaptor {
 		void setMyRank(int rnk);
 		void setProcCount(int cnt);
 		void setShdMem(std::string str);
-		void setDataIP(const std::string &str);
 		int get(int index);		
 		int calcGet(int index);
 
@@ -33,7 +31,6 @@ class DataAdaptor {
 		int procCount;
 		std::string shdMemStr;
 		std::vector <std::string> procIPs;
-		std::string dataIP;
 };
 
 #endif
