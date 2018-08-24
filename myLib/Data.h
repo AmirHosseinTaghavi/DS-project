@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 #include <zmq.hpp>
 
 #ifndef MYLIB_DATA_H
@@ -17,21 +19,21 @@ class Data {
 		int getProcCount();
 		int getPartCount();
 		std::string getMyIP();
-		std::unique_ptr<int[]> getMyPart();
+		std::string getShdMem();
 		void setInputSize(int size);
 		void setProcCount(int cnt);
 		void setPartCount(int cnt);
 		void setMyIP(const std::string &ip);
+		void setShdMem(std::string str);
 		void distribute(const int *input, int count);
 		void getMyShare();		
-		void ready4DataReq();
 	
 	private:
 		int inputSize;
 		int procCount;
 		int partCount;
 		std::string myIP;
-		std::unique_ptr<int[]> myPart;
+		std::string shdMemStr;
 		std::vector <std::string> procIPs;
 
 };

@@ -10,7 +10,6 @@ int main()
 {
 	Data d(MY_IP);
 	d.getMyShare();	
-	d.ready4DataReq();
 
     return 0;
 }

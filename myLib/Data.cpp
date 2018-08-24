@@ -5,7 +5,11 @@
 #include <string>
 #include <vector>
 
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 #include <zmq.hpp>
+
+using namespace boost::interprocess;
  
 namespace helperNS1 {
 
@@ -50,9 +54,13 @@ Data::Data(int procCount){
 	pfile.close();
 }
 
-//constructor fot data processes
+//constructor for data processes
 Data::Data(const std::string &ip){
 	setMyIP(ip);
+	std::string sharedName = "data";
+	shared_memory_object shdmem(open_or_create, sharedName.c_str(), read_write);
+	shdmem.truncate(512);
+	setShdMem(sharedName);
 }
 
 //Distribute input among data processes
@@ -66,7 +74,10 @@ void Data::distribute(const int *input, int count){
 }
 
 //use in data process and process will be ready for geting its part
-void Data::getMyShare(){	
+void Data::getMyShare(){
+	shared_memory_object shdmem(open_only, getShdMem().c_str(), read_write);	
+	mapped_region region(shdmem, read_write);
+	int *myPart = static_cast<int*>(region.get_address());
 	zmq::context_t context (1);
     zmq::socket_t socket (context, ZMQ_REP);
 	std::string prefix = "tcp://*:";
@@ -81,7 +92,6 @@ void Data::getMyShare(){
 		if(!d.empty() && isFirst){
 			setPartCount(stoi(d));
 			isFirst = false;
-			myPart = std::unique_ptr<int[]>(new int[getPartCount()]);			
 			zmq::message_t reply (5);
     	    memcpy (reply.data (), "", 5);
 	        socket.send (reply);		
@@ -100,36 +110,11 @@ void Data::getMyShare(){
 	}
 }
 
-/*This method can be used in data processes. When this method is called in a process, That process will
-listen for data requests and if it receives any index, this method returns data of its part to the computing
-process that called reqRepMyData function.*/
-void Data::ready4DataReq(){
-	std::cout << "This Process is Ready for Data Requests..." << std::endl;
-	zmq::context_t context1 (1);
-    zmq::socket_t socket1 (context1, ZMQ_REP);
-	std::string prefix = "tcp://*:";
-	std::string port = helperNS1::getPort(getMyIP());    
-	socket1.bind (prefix + port);	
-    while (true) {
-        zmq::message_t req;
-        socket1.recv (&req);
-		std::string d = std::string(static_cast<char*>(req.data()), req.size());
-		int index = stoi(d);
-		std::cout << "my " << index << "th Element is Requested" << std::endl;
-		int data = myPart[index];
-		std::string dataStr = std::to_string(data);		
-        zmq::message_t reply (5);
-        memcpy (reply.data (), dataStr.c_str(), 5);
-		std::cout << "Reply " << data << std::endl;
-        socket1.send (reply);
-    }
-}
-
 int Data::getInputSize(){return inputSize;}
 int Data::getProcCount(){return procCount;}
 int Data::getPartCount(){return partCount;}
 std::string Data::getMyIP(){return myIP;}
-std::unique_ptr<int[]> Data::getMyPart(){return std::move(myPart);}
+std::string Data::getShdMem(){return shdMemStr;}
 void Data::setInputSize(int size){
 	inputSize = size;
 }
@@ -141,4 +126,7 @@ void Data::setPartCount(int cnt){
 }
 void Data::setMyIP(const std::string &ip){
 	myIP = ip;
+}
+void Data::setShdMem(std::string str){
+	shdMemStr = str;
 }
