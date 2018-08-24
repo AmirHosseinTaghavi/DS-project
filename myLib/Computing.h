@@ -11,7 +11,7 @@
 class Computing {
 	
 	public:
-		Computing(DataAdaptor da);
+		Computing(const DataAdaptor &da);
 		int getInputSize();
 		int getMyRank();
 		int getProcCount();

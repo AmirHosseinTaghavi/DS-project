@@ -15,7 +15,7 @@ namespace helperNS {
 }
 
 //Constructor for Computing processes
-Computing::Computing(DataAdaptor da){
+Computing::Computing(const DataAdaptor &da){
 	adaptor = da;
 	std::ifstream pfile("compIP.txt");
 	std::string ip = "";
