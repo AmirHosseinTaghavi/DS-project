@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 
-#include "myLib/DataAdaptor.h"
+#include "include/DataAdaptor.h"
 #include <zmq.hpp>
 
 #ifndef MYLIB_COMPUTING_H
