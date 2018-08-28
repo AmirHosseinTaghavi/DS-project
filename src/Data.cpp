@@ -13,7 +13,7 @@ using namespace boost::interprocess;
  
 namespace helperNS1 {
 
-	void distto(const std::string &ip, int rnk, const int* input, int eachShare){
+	static void distto(const std::string &ip, int rnk, const int* input, int eachShare){
 		zmq::context_t context (1);
 		zmq::socket_t socket (context, ZMQ_REQ);
 		std::cout << "Send " << (rnk+1) << "nd Part of Input to process " << rnk << std::endl;		
@@ -36,7 +36,7 @@ namespace helperNS1 {
 		}
 	}
 
-	std::string getPort(const std::string &ip){
+	static std::string getPort(const std::string &ip){
 		int colonPos = ip.rfind(':');
 		return ip.substr(colonPos+1, 4);
 	}	

@@ -8,7 +8,7 @@
 #include <zmq.hpp>
  
 namespace helperNS {
-	std::string getPort(const std::string &ip){
+	static std::string getPort(const std::string &ip){
 		int colonPos = ip.rfind(':');
 		return ip.substr(colonPos+1, 4);
 	}	

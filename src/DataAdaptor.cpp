@@ -10,7 +10,7 @@
 using namespace boost::interprocess;
  
 namespace DAHelperNS {
-	int reqRep(const std::vector<std::string> &procIPs, int ownerRnk, int index){
+	static int reqRep(const std::vector<std::string> &procIPs, int ownerRnk, int index){
 		zmq::context_t context (1);
 		zmq::socket_t socket (context, ZMQ_REQ);
 		std::cout << "Request Element to Process " << ownerRnk << std::endl;
@@ -25,7 +25,7 @@ namespace DAHelperNS {
 		return stoi(d);			
 	}
 
-	int getSharedData(int index, std::string sharedName){
+	static int getSharedData(int index, std::string sharedName){
 		std::cout << "get index from shared memory... " << std::endl;
 		shared_memory_object shdmem(open_only, sharedName.c_str(), read_write);		
 		mapped_region region(shdmem, read_write);
@@ -34,7 +34,7 @@ namespace DAHelperNS {
 	}
 
 
-	std::string getPort(const std::string &ip){
+	static std::string getPort(const std::string &ip){
 		int colonPos = ip.rfind(':');
 		return ip.substr(colonPos+1, 4);
 	}	
