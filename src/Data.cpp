@@ -103,8 +103,9 @@ void Data::receivData(const std::string &procPort){
 	}
 	std::cout << "This Process Recieved its Part of Input : " << std::endl;		
 	for(int i=0; i<getPartCount(); ++i){
-		std::cout << dataPart[i] << "," << std::endl;
+		std::cout << dataPart[i] << ",";
 	}
+	std::cout << "\n" ;
 	std::cout << "Data is Allocated to Shared Memory Space." << std::endl;
 }
 

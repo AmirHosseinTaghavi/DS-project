@@ -19,7 +19,7 @@ int main()
 	}
 	inputFile.close();
 
-	Data d(3);
+	Data d(3, "distIPs.txt");
 	d.distribute(inputArr, 24);
 
 	DataAdaptor da(3, 0, 24, "compProcIPs.txt");	
