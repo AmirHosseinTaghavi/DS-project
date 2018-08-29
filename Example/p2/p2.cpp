@@ -4,12 +4,12 @@
 #include "include/Computing.h"
 #include "include/Data.h"
 
-const std::string MY_IP = "tcp://192.168.56.105:5551"; 
+const std::string MY_PORT = "5551"; 
  
 int main(){
 
-	Data d(MY_IP);
-	d.getMyShare();	
+	Data d(256);
+	d.receivData(MY_PORT);	
 
 	return 0;
 }

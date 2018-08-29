@@ -11,26 +11,26 @@
 class DataAdaptor {
 	
 	public:
-		DataAdaptor(int procCount, int myRank, int inputSize);
+		DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std::string &compProcsFile);
 		DataAdaptor();
 		~DataAdaptor();
 		int getInputSize();
-		int getMyRank();
-		int getProcCount();
-		std::string getShdMem();
+		int getNodeRank();
+		int getNodesCount();
+		std::string getShdName();
 		void setInputSize(int size);
-		void setMyRank(int rnk);
-		void setProcCount(int cnt);
-		void setShdMem(std::string str);
+		void setNodeRank(int rnk);
+		void setNodesCount(int cnt);
+		void setShdName(std::string str);
 		int get(int index);		
-		int calcGet(int index);
+		int localGet(int index);
 
 	private:
 		int inputSize;
-		int myRank;
-		int procCount;
-		std::string shdMemStr;
-		std::vector <std::string> procIPs;
+		int nodeRank;
+		int nodesCount;
+		std::string shdMemName;
+		std::vector <std::string> compProcIPs;
 };
 
 #endif

@@ -10,10 +10,11 @@
 using namespace boost::interprocess;
  
 namespace DAHelperNS {
-	static int reqRep(const std::vector<std::string> &procIPs, int ownerRnk, int index){
+
+	static int compDataReq(const std::vector<std::string> &procIPs, int ownerRnk, int index){
 		zmq::context_t context (1);
 		zmq::socket_t socket (context, ZMQ_REQ);
-		std::cout << "Request Element to Process " << ownerRnk << std::endl;
+		std::cout << "Request Element to node " << ownerRnk << std::endl;
 		socket.connect (procIPs[ownerRnk]);
 		zmq::message_t request (2);
 		std::string str = std::to_string(index);
@@ -32,69 +33,75 @@ namespace DAHelperNS {
 		int *data = static_cast<int*>(region.get_address());
 		return data[index];	
 	}
-
-
-	static std::string getPort(const std::string &ip){
-		int colonPos = ip.rfind(':');
-		return ip.substr(colonPos+1, 4);
-	}	
 }
 
-DataAdaptor::DataAdaptor(int procCount, int myRank, int inputSize){
-	setMyRank(myRank);
-	setProcCount(procCount);
+/*This method is responsible for providing data from Data processes for Computing
+processes. nodesCount is the count of machines that participate in communication.
+nodeRank is the rank of computing process which creates this object among all nodes.
+compProcsFile is the name of the file that should consist of ips of all computing 
+processes*/
+DataAdaptor::DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std::string &compProcsFile){
+	setNodeRank(nodeRank);
+	setNodesCount(nodesCount);
 	setInputSize(inputSize);
-	std::ifstream pfile("procIPs.txt");
+	std::ifstream pfile(compProcsFile);
 	std::string ip = "";
 	while(getline(pfile, ip)){
 		if(ip.size()>0)
-			procIPs.push_back(ip);
+			compProcIPs.push_back(ip);
 	}	
 	pfile.close();
 	std::string sharedName = "data";
-	setShdMem(sharedName);
+	setShdName(sharedName);
 }
 
 DataAdaptor::DataAdaptor(){
 }
 
+/*as the destructor called, the shared memory space that allocated in the data
+process will be deallocated*/
 DataAdaptor::~DataAdaptor(){
-	shared_memory_object::remove(getShdMem().c_str());	
+	shared_memory_object::remove(getShdName().c_str());	
 }
 
+/*This method calculates the owner machine of requested index and if it's in 
+the node of method's caller process the data will be received through shared
+space. otherwise request it to computing process of owner node*/
 int DataAdaptor::get(int index){
-	int eachShare = getInputSize()/getProcCount();
+	int eachShare = getInputSize()/getNodesCount();
 	int dataOwner = index/eachShare;
-	if(dataOwner == myRank){
+	if(dataOwner == getNodeRank()){
 		std::cout << "Owner of Requested Element is This Machine" << std::endl; 
-		return DAHelperNS::getSharedData(index, getShdMem());
+		return localGet(index);
 	}else{
 		std::cout << "Owner of Requested Element is Machine: " << dataOwner << std::endl;
-		int data = DAHelperNS::reqRep(procIPs, dataOwner, index);
+		int data = DAHelperNS::compDataReq(compProcIPs, dataOwner, index);
 		std::cout << "Data Owner Replied -> " << data << std::endl;
 		return data;
 	}	
 }
 
-int DataAdaptor::calcGet(int index){
-	int eachShare = getInputSize()/getProcCount();
-	int myIndex = index % eachShare;
-	return DAHelperNS::getSharedData(myIndex, getShdMem());
+/*This method receives global index of data and calculates its local index
+and then return the correct data from shared memory space*/
+int DataAdaptor::localGet(int index){
+	int eachShare = getInputSize()/getNodesCount();
+	int thisIndex = index % eachShare;
+	return DAHelperNS::getSharedData(thisIndex, getShdName());
 }
 
 int DataAdaptor::getInputSize(){return inputSize;}
-int DataAdaptor::getMyRank(){return myRank;}
-int DataAdaptor::getProcCount(){return procCount;}
-std::string DataAdaptor::getShdMem(){return shdMemStr;}
+int DataAdaptor::getNodeRank(){return nodeRank;}
+int DataAdaptor::getNodesCount(){return nodesCount;}
+std::string DataAdaptor::getShdName(){return shdMemName;}
 void DataAdaptor::setInputSize(int size){
 	inputSize = size;
 }
-void DataAdaptor::setMyRank(int rnk){
-	myRank = rnk;
+void DataAdaptor::setNodeRank(int rnk){
+	nodeRank = rnk;
 }
-void DataAdaptor::setProcCount(int cnt){
-	procCount = cnt;
+void DataAdaptor::setNodesCount(int cnt){
+	nodesCount = cnt;
 }
-void DataAdaptor::setShdMem(std::string str){
-	shdMemStr = str;
+void DataAdaptor::setShdName(std::string str){
+	shdMemName = str;
 }

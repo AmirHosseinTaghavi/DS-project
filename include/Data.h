@@ -13,28 +13,25 @@
 class Data {
 	
 	public:
-		Data(int procCount);
-		Data(const std::string &ip);
+		Data(int procCount, const std::string &distFile);
+		Data(int sharedSize);
 		int getInputSize();
 		int getProcCount();
 		int getPartCount();
-		std::string getMyIP();
-		std::string getShdMem();
+		std::string getShdName();
 		void setInputSize(int size);
 		void setProcCount(int cnt);
 		void setPartCount(int cnt);
-		void setMyIP(const std::string &ip);
-		void setShdMem(std::string str);
+		void setShdName(std::string str);
 		void distribute(const int *input, int count);
-		void getMyShare();		
+		void receivData(const std::string &procPort);		
 	
 	private:
 		int inputSize;
 		int procCount;
 		int partCount;
-		std::string myIP;
-		std::string shdMemStr;
-		std::vector <std::string> procIPs;
+		std::string shdMemName;
+		std::vector <std::string> distIPs;
 
 };
 
