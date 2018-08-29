@@ -1,10 +1,10 @@
 #include "include/Computing.h"
-#include "include/DataAdaptor.h"
 
 #include <memory>
 #include <string>
 
 #include <zmq.hpp>
+#include "include/DataAdaptor.h"
  
 /*Constructor for Computing process. This object is composed of DataAdaptor 
 object which does providing data.*/
