@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include "include/Computing.h"
 #include "include/Data.h"
 
 const std::string MY_PORT = "5550"; 
