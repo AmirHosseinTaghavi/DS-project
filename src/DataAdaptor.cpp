@@ -35,12 +35,11 @@ namespace DAHelperNS {
 	}
 
 	static void updateReqCnt(std::string sharedName){
-		shared_memory_object shdmem(open_only, sharedName.c_str(), read_write);		
-		mapped_region region(shdmem, read_write);
-		int *data = static_cast<int*>(region.get_address());
-		for(int i=0; i<10; i++){
-			std::cout << data[i] << std::endl;
-		}
+		shared_memory_object shdCntr(open_only, "cntr", read_write);		
+		mapped_region region(shdCntr, read_write);
+		int *cntr = static_cast<int*>(region.get_address());
+		cntr[0] = cntr[0] + 1;
+		std::cout << "cntr: " << cntr[0] << std::endl;
 	}
 }
 
@@ -62,6 +61,8 @@ DataAdaptor::DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std:
 	pfile.close();
 	std::string sharedName = "data";
 	setShdName(sharedName);
+	shared_memory_object shdCntr(open_or_create, "cntr", read_write);
+	shdCntr.truncate(20);	
 }
 
 DataAdaptor::DataAdaptor(){
@@ -71,6 +72,7 @@ DataAdaptor::DataAdaptor(){
 process will be deallocated*/
 DataAdaptor::~DataAdaptor(){
 	shared_memory_object::remove(getShdName().c_str());	
+	shared_memory_object::remove("cntr");	
 }
 
 /*This method calculates the owner machine of requested index and if it's in 
