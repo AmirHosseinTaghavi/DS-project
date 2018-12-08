@@ -11,5 +11,7 @@ int main(){
 	Data d(256);
 	d.receivData(MY_PORT);	
 
+	d.replyAccessCntr("5554");
+
 	return 0;
 }
