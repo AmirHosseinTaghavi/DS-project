@@ -109,6 +109,27 @@ void Data::receivData(const std::string &procPort){
 	std::cout << "Data is Allocated to Shared Memory Space." << std::endl;
 }
 
+void Data::replyAccessCntr(const std::string &procPort){
+	zmq::context_t context (1);
+	zmq::socket_t socket (context, ZMQ_REP);
+	std::string prefix = "tcp://*:";
+	socket.bind (prefix + procPort);	
+	while (true) {
+		zmq::message_t msg;
+		socket.recv (&msg);
+		std::string d = std::string(static_cast<char*>(msg.data()), msg.size());
+		if(d=="cntr"){
+			shared_memory_object shdcntr(open_only, "cntr", read_write);	
+			mapped_region region(shdcntr, read_write);
+			int *cntr = static_cast<int*>(region.get_address());	
+			zmq::message_t reply (5);
+			std::string strCntr = std::to_string(cntr[0]);
+			memcpy (reply.data (), strCntr.c_str(), 2);	
+			socket.send (reply);		
+		}
+	}
+}
+
 int Data::getInputSize(){return inputSize;}
 int Data::getProcCount(){return procCount;}
 int Data::getPartCount(){return partCount;}

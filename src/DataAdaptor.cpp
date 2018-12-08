@@ -34,7 +34,7 @@ namespace DAHelperNS {
 		return data[index];	
 	}
 
-	static void updateReqCnt(std::string sharedName){
+	static void updateReqCnt(){
 		shared_memory_object shdCntr(open_only, "cntr", read_write);		
 		mapped_region region(shdCntr, read_write);
 		int *cntr = static_cast<int*>(region.get_address());
@@ -97,7 +97,7 @@ and then return the correct data from shared memory space*/
 int DataAdaptor::localGet(int index){
 	int eachShare = getInputSize()/getNodesCount();
 	int thisIndex = index % eachShare;
-	DAHelperNS::updateReqCnt(getShdName());
+	DAHelperNS::updateReqCnt();
 	return DAHelperNS::getSharedData(thisIndex, getShdName());
 }
 

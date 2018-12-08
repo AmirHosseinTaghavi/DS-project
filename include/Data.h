@@ -25,6 +25,7 @@ class Data {
 		void setShdName(std::string str);
 		void distribute(const int *input, int count);
 		void receivData(const std::string &procPort);		
+		void replyAccessCntr(const std::string &procPort);
 	
 	private:
 		int inputSize;
