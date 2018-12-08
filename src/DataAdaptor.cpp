@@ -63,6 +63,9 @@ DataAdaptor::DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std:
 	setShdName(sharedName);
 	shared_memory_object shdCntr(open_or_create, "cntr", read_write);
 	shdCntr.truncate(20);	
+	mapped_region region(shdCntr, read_write);
+	int *cntr = static_cast<int*>(region.get_address());
+	cntr[0] = 0;
 }
 
 DataAdaptor::DataAdaptor(){
