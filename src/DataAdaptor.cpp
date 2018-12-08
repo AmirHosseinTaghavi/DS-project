@@ -33,6 +33,15 @@ namespace DAHelperNS {
 		int *data = static_cast<int*>(region.get_address());
 		return data[index];	
 	}
+
+	static void updateReqCnt(std::string sharedName){
+		shared_memory_object shdmem(open_only, sharedName.c_str(), read_write);		
+		mapped_region region(shdmem, read_write);
+		int *data = static_cast<int*>(region.get_address());
+		for(int i=0; i<10; i++){
+			std::cout << data[i] << std::endl;
+		}
+	}
 }
 
 /*This method is responsible for providing data from Data processes for Computing
@@ -86,6 +95,7 @@ and then return the correct data from shared memory space*/
 int DataAdaptor::localGet(int index){
 	int eachShare = getInputSize()/getNodesCount();
 	int thisIndex = index % eachShare;
+	DAHelperNS::updateReqCnt(getShdName());
 	return DAHelperNS::getSharedData(thisIndex, getShdName());
 }
 
