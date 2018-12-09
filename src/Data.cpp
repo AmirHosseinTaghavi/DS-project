@@ -113,19 +113,20 @@ void Data::replyAccessCntr(const std::string &procPort){
 	zmq::context_t context (1);
 	zmq::socket_t socket (context, ZMQ_REP);
 	std::string prefix = "tcp://*:";
-	socket.bind (prefix + procPort);	
+	socket.bind (prefix + procPort);
 	while (true) {
 		zmq::message_t msg;
 		socket.recv (&msg);
 		std::string d = std::string(static_cast<char*>(msg.data()), msg.size());
-		if(d=="cntr"){
+		if(d == "cntr"){
 			shared_memory_object shdcntr(open_only, "cntr", read_write);	
 			mapped_region region(shdcntr, read_write);
-			int *cntr = static_cast<int*>(region.get_address());	
-			zmq::message_t reply (5);
+			int *cntr = static_cast<int*>(region.get_address());
 			std::string strCntr = std::to_string(cntr[0]);
-			memcpy (reply.data (), strCntr.c_str(), 2);	
+			zmq::message_t reply (strCntr.length());
+			memcpy (reply.data (), strCntr.c_str(), strCntr.length());	
 			socket.send (reply);		
+			std::cout << "My access counter is requested: " << strCntr << std::endl;
 		}
 	}
 }
