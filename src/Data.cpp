@@ -58,6 +58,7 @@ Data::Data(int sharedSize){
 	shdmem.truncate(sharedSize);
 	setShdName(shdMemName);
 	dataPartArr = new int[sharedSize];
+	accessCnt = 0;
 }
 
 Data::~Data(){
@@ -134,6 +135,7 @@ void Data::replytoReqs(const std::string &port){
 		if(!d.empty() && isFirst){
 			req_type = d;
 			if(req_type == "cntr"){
+				std::cout << "Count of accesses is requested" << std::endl;
 				std::string strCntr = std::to_string(accessCnt);
 				zmq::message_t reply (strCntr.length());
 				memcpy (reply.data (), strCntr.c_str(), strCntr.length());	
