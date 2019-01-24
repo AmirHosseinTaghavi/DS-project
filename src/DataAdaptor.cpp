@@ -18,6 +18,13 @@ namespace DAHelperNS {
 		zmq::socket_t socket (context, ZMQ_REQ);
 		std::cout << "Request Element to node " << ownerRnk << std::endl;
 		socket.connect (dataIPs[ownerRnk]);
+		
+		zmq::message_t req_type (5);		
+		memcpy (req_type.data (), "load", 5);
+		socket.send (req_type);
+		zmq::message_t rtreply;
+		socket.recv (&rtreply);	
+		
 		zmq::message_t request (2);
 		std::string str = std::to_string(dataIndex);
 		memcpy (request.data (), str.c_str(), 2);
@@ -34,14 +41,6 @@ namespace DAHelperNS {
 		mapped_region region(shdmem, read_write);
 		int *data = static_cast<int*>(region.get_address());
 		return data[index];	
-	}
-
-	static void updateReqCnt(){
-		shared_memory_object shdCntr(open_only, "cntr", read_write);		
-		mapped_region region(shdCntr, read_write);
-		int *cntr = static_cast<int*>(region.get_address());
-		cntr[0] = cntr[0] + 1;
-		std::cout << "cntr: " << cntr[0] << std::endl;
 	}
 }
 
@@ -63,20 +62,9 @@ DataAdaptor::DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std:
 	pfile.close();
 	std::string sharedName = "data";
 	setShdName(sharedName);
-	shared_memory_object shdCntr(open_or_create, "cntr", read_write);
-	shdCntr.truncate(20);	
-	mapped_region region(shdCntr, read_write);
-	int *cntr = static_cast<int*>(region.get_address());
-	cntr[0] = 0;
 }
 
 DataAdaptor::DataAdaptor(){
-}
-
-/*as the destructor called, the shared memory space that allocated in the data
-process will be deallocated*/
-DataAdaptor::~DataAdaptor(){
-	shared_memory_object::remove("cntr");	
 }
 
 /*This method calculates the owner machine of requested index and if it's in 
@@ -101,7 +89,6 @@ and then return the correct data from shared memory space*/
 int DataAdaptor::localGet(int index){
 	int eachShare = getInputSize()/getNodesCount();
 	int thisIndex = index % eachShare;
-	DAHelperNS::updateReqCnt();
 	return DAHelperNS::getSharedData(thisIndex, getShdName());
 }
 

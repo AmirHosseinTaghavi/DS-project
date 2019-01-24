@@ -5,7 +5,7 @@ int main(){
 
 	zmq::context_t context (1);
 	zmq::socket_t socket (context, ZMQ_REQ);
-	socket.connect ("tcp://192.168.56.106:5552");
+	socket.connect ("tcp://192.168.56.106:5542");
 	zmq::message_t request (4);
 	memcpy (request.data (), "cntr", 4);
 	socket.send (request);

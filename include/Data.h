@@ -20,14 +20,15 @@ class Data {
 		int getProcCount();
 		int getPartCount();
 		std::string getShdName();
+		int getAccessCnt();
 		void setInputSize(int size);
 		void setProcCount(int cnt);
 		void setPartCount(int cnt);
 		void setShdName(std::string str);
+		void setAccessCnt(int cnt);
 		void distribute(const int *input, int count);
 		void receivData(const std::string &procPort);
 		void replytoReqs(const std::string &port);		
-		void replyAccessCntr(const std::string &procPort);
 	
 	private:
 		int inputSize;
@@ -36,7 +37,7 @@ class Data {
 		int* dataPartArr; 
 		std::string shdMemName;
 		std::vector <std::string> distIPs;
-
+		int accessCnt;
 };
 
 #endif

@@ -124,40 +124,40 @@ void Data::replytoReqs(const std::string &port){
 	zmq::context_t context1 (1);
 	zmq::socket_t socket1 (context1, ZMQ_REP);
 	std::string prefix = "tcp://*:";    
-	socket1.bind (prefix + port);	
+	socket1.bind (prefix + port);
+	bool isFirst = true;
+	std::string req_type;	
 	while (true) {
 		zmq::message_t req;
 		socket1.recv (&req);
 		std::string d = std::string(static_cast<char*>(req.data()), req.size());
-		int index = stoi(d);
-		std::cout << "Element number" << index << " is Requested" << std::endl;
-		int data = dataPartArr[index];
-		std::string dataStr = std::to_string(data);		
-		zmq::message_t reply (5);
-		memcpy (reply.data (), dataStr.c_str(), 5);
-		std::cout << "Reply " << data << std::endl;
-		socket1.send (reply);
-	}
-}
-
-void Data::replyAccessCntr(const std::string &procPort){
-	zmq::context_t context (1);
-	zmq::socket_t socket (context, ZMQ_REP);
-	std::string prefix = "tcp://*:";
-	socket.bind (prefix + procPort);
-	while (true) {
-		zmq::message_t msg;
-		socket.recv (&msg);
-		std::string d = std::string(static_cast<char*>(msg.data()), msg.size());
-		if(d == "cntr"){
-			shared_memory_object shdcntr(open_only, "cntr", read_write);	
-			mapped_region region(shdcntr, read_write);
-			int *cntr = static_cast<int*>(region.get_address());
-			std::string strCntr = std::to_string(cntr[0]);
-			zmq::message_t reply (strCntr.length());
-			memcpy (reply.data (), strCntr.c_str(), strCntr.length());	
-			socket.send (reply);		
-			std::cout << "My access counter is requested: " << strCntr << std::endl;
+		if(!d.empty() && isFirst){
+			req_type = d;
+			if(req_type == "cntr"){
+				std::string strCntr = std::to_string(accessCnt);
+				zmq::message_t reply (strCntr.length());
+				memcpy (reply.data (), strCntr.c_str(), strCntr.length());	
+				socket1.send (reply);		
+			}else{
+				isFirst = false;
+				zmq::message_t reply (5);
+				memcpy (reply.data (), "", 5);
+				socket1.send (reply);		
+			}			
+			continue;				
+		}
+		if(req_type == "load"){		
+			int index = stoi(d);
+			std::cout << "Element number" << index << " is Requested" << std::endl;
+			int data = dataPartArr[index];
+			++accessCnt;
+			std::cout << "access count incremented!" << std::endl;
+			std::string dataStr = std::to_string(data);		
+			zmq::message_t reply (5);
+			memcpy (reply.data (), dataStr.c_str(), 5);
+			std::cout << "Reply " << data << std::endl;
+			socket1.send (reply);
+			isFirst = true;
 		}
 	}
 }
@@ -166,6 +166,7 @@ int Data::getInputSize(){return inputSize;}
 int Data::getProcCount(){return procCount;}
 int Data::getPartCount(){return partCount;}
 std::string Data::getShdName(){return shdMemName;}
+int Data::getAccessCnt(){return accessCnt;}
 void Data::setInputSize(int size){
 	inputSize = size;
 }
@@ -177,4 +178,7 @@ void Data::setPartCount(int cnt){
 }
 void Data::setShdName(std::string str){
 	shdMemName = str;
+}
+void Data::setAccessCnt(int cnt){
+	accessCnt = cnt;
 }

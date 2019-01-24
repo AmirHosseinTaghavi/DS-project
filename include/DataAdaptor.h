@@ -13,7 +13,6 @@ class DataAdaptor {
 	public:
 		DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std::string &dataProcsFile);
 		DataAdaptor();
-		~DataAdaptor();
 		int getInputSize();
 		int getNodeRank();
 		int getNodesCount();
