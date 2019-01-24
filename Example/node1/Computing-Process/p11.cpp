@@ -22,7 +22,7 @@ int main()
 	Data d(3, "distIPs.txt");
 	d.distribute(inputArr, 24);
 
-	DataAdaptor da(3, 0, 24, "compProcIPs.txt");	
+	DataAdaptor da(3, 0, 24, "dataProcIPs.txt");	
 	Computing c(da);
 	sumMatrices(c, 3, 4);
 	/*std::unique_ptr<int[]> p;	

@@ -14,7 +14,6 @@ class Computing {
 		Computing(const DataAdaptor &da);
 		std::unique_ptr<int[]> access(int index, int count);
 		int access(int index);
-		void replytoReqs(const std::string &port);
 	
 	private:
 		DataAdaptor adaptor;

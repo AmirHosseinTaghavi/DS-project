@@ -11,7 +11,7 @@
 class DataAdaptor {
 	
 	public:
-		DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std::string &compProcsFile);
+		DataAdaptor(int nodesCount, int nodeRank, int inputSize, const std::string &dataProcsFile);
 		DataAdaptor();
 		~DataAdaptor();
 		int getInputSize();
@@ -30,7 +30,7 @@ class DataAdaptor {
 		int nodeRank;
 		int nodesCount;
 		std::string shdMemName;
-		std::vector <std::string> compProcIPs;
+		std::vector <std::string> dataProcIPs;
 };
 
 #endif

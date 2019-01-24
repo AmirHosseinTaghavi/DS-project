@@ -15,6 +15,7 @@ class Data {
 	public:
 		Data(int procCount, const std::string &distFile);
 		Data(int sharedSize);
+		~Data();
 		int getInputSize();
 		int getProcCount();
 		int getPartCount();
@@ -24,13 +25,15 @@ class Data {
 		void setPartCount(int cnt);
 		void setShdName(std::string str);
 		void distribute(const int *input, int count);
-		void receivData(const std::string &procPort);		
+		void receivData(const std::string &procPort);
+		void replytoReqs(const std::string &port);		
 		void replyAccessCntr(const std::string &procPort);
 	
 	private:
 		int inputSize;
 		int procCount;
 		int partCount;
+		int* dataPartArr; 
 		std::string shdMemName;
 		std::vector <std::string> distIPs;
 
