@@ -19,8 +19,8 @@ namespace DAHelperNS {
 		std::cout << "Request Element to node " << ownerRnk << std::endl;
 		socket.connect (dataIPs[ownerRnk]);
 		
-		zmq::message_t req_type (5);		
-		memcpy (req_type.data (), "load", 5);
+		zmq::message_t req_type (4);		
+		memcpy (req_type.data (), "load", 4);
 		socket.send (req_type);
 		zmq::message_t rtreply;
 		socket.recv (&rtreply);	
