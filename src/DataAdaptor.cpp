@@ -35,12 +35,49 @@ namespace DAHelperNS {
 		return stoi(d);			
 	}
 
+	static void remotStor(const std::vector<std::string> &dataIPs, int ownerRnk
+						, int index, int val, int eachShare){
+		int dataIndex = index % eachShare;		
+		zmq::context_t context (1);
+		zmq::socket_t socket (context, ZMQ_REQ);
+		std::cout << "Store Element to node " << ownerRnk << std::endl;
+		socket.connect (dataIPs[ownerRnk]);
+		
+		zmq::message_t req_type (4);		
+		memcpy (req_type.data (), "stor", 4);
+		socket.send (req_type);
+		zmq::message_t rtreply;
+		socket.recv (&rtreply);	
+		
+		zmq::message_t request (2);
+		std::string str = std::to_string(dataIndex);
+		memcpy (request.data (), str.c_str(), 2);
+		socket.send (request);
+		zmq::message_t reply;
+		socket.recv (&reply);			
+
+		zmq::message_t request1 (2);
+		std::string str1 = std::to_string(val);
+		memcpy (request1.data (), str1.c_str(), 2);
+		socket.send (request1);
+		zmq::message_t reply1;
+		socket.recv (&reply1);			
+	}
+
 	static int getSharedData(int index, std::string sharedName){
 		std::cout << "get index from shared memory... " << std::endl;
 		shared_memory_object shdmem(open_only, sharedName.c_str(), read_write);		
 		mapped_region region(shdmem, read_write);
 		int *data = static_cast<int*>(region.get_address());
 		return data[index];	
+	}
+
+	static void storSharedData(int index, int val, std::string sharedName){
+		std::cout << "Store index to shared memory... " << std::endl;
+		shared_memory_object shdmem(open_only, sharedName.c_str(), read_write);		
+		mapped_region region(shdmem, read_write);
+		int *data = static_cast<int*>(region.get_address());
+		data[index] = val;	
 	}
 }
 
@@ -84,12 +121,32 @@ int DataAdaptor::get(int index){
 	}	
 }
 
+void DataAdaptor::stor(int index, int val){
+	int eachShare = getInputSize()/getNodesCount();
+	int dataOwner = index/eachShare;
+	if(dataOwner == getNodeRank()){
+		std::cout << "Owner of Store Element is This Machine" << std::endl; 
+		localStor(index, val);
+	}else{
+		std::cout << "Owner of Store Element is Machine: " << dataOwner << std::endl;
+		DAHelperNS::remotStor(dataProcIPs, dataOwner, index, val, eachShare);
+		std::cout << "Store operation applied!" << std::endl;
+	}	
+}
+
+
 /*This method receives global index of data and calculates its local index
 and then return the correct data from shared memory space*/
 int DataAdaptor::localGet(int index){
 	int eachShare = getInputSize()/getNodesCount();
 	int thisIndex = index % eachShare;
 	return DAHelperNS::getSharedData(thisIndex, getShdName());
+}
+
+void DataAdaptor::localStor(int index, int val){
+	int eachShare = getInputSize()/getNodesCount();
+	int thisIndex = index % eachShare;
+	DAHelperNS::storSharedData(thisIndex, val, getShdName());
 }
 
 int DataAdaptor::getInputSize(){return inputSize;}

@@ -22,7 +22,9 @@ class DataAdaptor {
 		void setNodesCount(int cnt);
 		void setShdName(std::string str);
 		int get(int index);		
+		void stor(int index, int val);
 		int localGet(int index);
+		void localStor(int index, int val);
 
 	private:
 		int inputSize;

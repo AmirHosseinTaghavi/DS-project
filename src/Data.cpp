@@ -122,11 +122,17 @@ a process, That process will listen for data access requests and if it receives
 any index, it returns that data.*/
 void Data::replytoReqs(const std::string &port){
 	std::cout << "This Process is Ready for Access Requests..." << std::endl;
+	shared_memory_object shdmem(open_only, getShdName().c_str(), read_write);	
+	mapped_region region(shdmem, read_write);
+	int *dataPart = static_cast<int*>(region.get_address());
 	zmq::context_t context1 (1);
 	zmq::socket_t socket1 (context1, ZMQ_REP);
 	std::string prefix = "tcp://*:";    
 	socket1.bind (prefix + port);
 	bool isFirst = true;
+	bool storIsFirst = true;
+	int storIndex;
+	int storVal;
 	std::string req_type;	
 	while (true) {
 		zmq::message_t req;
@@ -160,6 +166,26 @@ void Data::replytoReqs(const std::string &port){
 			std::cout << "Reply " << data << std::endl;
 			socket1.send (reply);
 			isFirst = true;
+		}
+		else if(req_type == "stor"){
+			if(storIsFirst){
+				storIndex = stoi(d);
+				zmq::message_t reply (5);
+				memcpy (reply.data (), "", 5);
+				socket1.send (reply);
+				storIsFirst = false;		
+			}else{
+				storVal = stoi(d);
+				dataPartArr[storIndex] = storVal;
+				dataPart[storIndex] = storVal;
+				std::cout << "Element #" << storIndex << " changed to " 
+							<< storVal << std::endl;
+				zmq::message_t reply (5);
+				memcpy (reply.data (), "", 5);
+				socket1.send (reply);
+				isFirst = true;
+				storIsFirst = true;
+			}
 		}
 	}
 }

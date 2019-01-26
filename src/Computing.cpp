@@ -29,4 +29,10 @@ int Computing::access(int index){
 	std::cout << "This Process Wants to Access Element number" << index 
 				<< " of Input" << std::endl;
 	return adaptor.get(index);
-}	
+}
+
+void Computing::store(int index, int val){
+	std::cout << "This Process Wants to change Element number" << index 
+				<< " of Input to " << val << std::endl;
+	adaptor.stor(index, val);
+}		

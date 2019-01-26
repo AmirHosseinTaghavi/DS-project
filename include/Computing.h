@@ -14,6 +14,7 @@ class Computing {
 		Computing(const DataAdaptor &da);
 		std::unique_ptr<int[]> access(int index, int count);
 		int access(int index);
+		void store(int index, int val);
 	
 	private:
 		DataAdaptor adaptor;
