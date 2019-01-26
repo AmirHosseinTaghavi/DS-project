@@ -57,13 +57,11 @@ Data::Data(int sharedSize){
 	shared_memory_object shdmem(open_or_create, shdMemName.c_str(), read_write);
 	shdmem.truncate(sharedSize);
 	setShdName(shdMemName);
-	dataPartArr = new int[sharedSize];
 	accessCnt = 0;
 }
 
 Data::~Data(){
 	shared_memory_object::remove(getShdName().c_str());
-	delete[] dataPartArr;
 }
 
 //Distribute input among data processes
@@ -102,7 +100,6 @@ void Data::receivData(const std::string &procPort){
 			continue;				
 		}
 		dataPart[cnt] = stoi(d);
-		dataPartArr[cnt] = stoi(d);
 		if(!d.empty()) ++cnt;		
 		zmq::message_t reply (5);
 		memcpy (reply.data (), "", 5);
@@ -157,7 +154,7 @@ void Data::replytoReqs(const std::string &port){
 		if(req_type == "load"){		
 			int index = stoi(d);
 			std::cout << "Element number" << index << " is Requested" << std::endl;
-			int data = dataPartArr[index];
+			int data = dataPart[index];
 			++accessCnt;
 			std::cout << "access count incremented!" << std::endl;
 			std::string dataStr = std::to_string(data);		
@@ -176,7 +173,6 @@ void Data::replytoReqs(const std::string &port){
 				storIsFirst = false;		
 			}else{
 				storVal = stoi(d);
-				dataPartArr[storIndex] = storVal;
 				dataPart[storIndex] = storVal;
 				std::cout << "Element #" << storIndex << " changed to " 
 							<< storVal << std::endl;

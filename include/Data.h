@@ -34,7 +34,6 @@ class Data {
 		int inputSize;
 		int procCount;
 		int partCount;
-		int* dataPartArr; 
 		std::string shdMemName;
 		std::vector <std::string> distIPs;
 		int accessCnt;
