@@ -15,9 +15,11 @@ using namespace std;
 void foo(Computing &c, int x)
 {
 	cout<< "foo started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+8)%24);
+	int val1 = c.access((x+8)%24);
+	cout << "Result of access to element #" << (x+8)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "foo finished" <<endl;
 }
@@ -25,9 +27,11 @@ void foo(Computing &c, int x)
 void foo2(Computing &c, int x)
 {
 	cout<< "foo2 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+8)%24);
+	int val1 = c.access((x+8)%24);
+	cout << "Result of access to element #" << (x+8)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "foo2 finished" <<endl;
 }
@@ -35,9 +39,11 @@ void foo2(Computing &c, int x)
 void foo3(Computing &c, int x)
 {
 	cout<< "foo3 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+8)%24);
+	int val1 = c.access((x+8)%24);
+	cout << "Result of access to element #" << (x+8)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "foo3 finished" <<endl;
 }
@@ -45,9 +51,11 @@ void foo3(Computing &c, int x)
 void foo4(Computing &c, int x)
 {
 	cout<< "foo4 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+8)%24);
+	int val1 = c.access((x+8)%24);
+	cout << "Result of access to element #" << (x+8)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "foo4 finished" <<endl;
 }
@@ -55,9 +63,11 @@ void foo4(Computing &c, int x)
 void foo5(Computing &c, int x)
 {
 	cout<< "foo5 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+8)%24);
+	int val1 = c.access((x+8)%24);
+	cout << "Result of access to element #" << (x+8)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "foo5 finished" <<endl;
 }
@@ -65,9 +75,11 @@ void foo5(Computing &c, int x)
 void bar(Computing &c, int x)
 {
 	cout<< "bar started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+4)%24);
+	int val1 = c.access((x+4)%24);
+	cout << "Result of access to element #" << (x+4)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "bar finished" <<endl;
 }
@@ -75,9 +87,11 @@ void bar(Computing &c, int x)
 void bar2(Computing &c, int x)
 {
 	cout<< "bar2 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+4)%24);
+	int val1 = c.access((x+4)%24);
+	cout << "Result of access to element #" << (x+4)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "bar2 finished" <<endl;
 }
@@ -85,9 +99,11 @@ void bar2(Computing &c, int x)
 void bar3(Computing &c, int x)
 {
 	cout<< "bar3 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+4)%24);
+	int val1 = c.access((x+4)%24);
+	cout << "Result of access to element #" << (x+4)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "bar3 finished" <<endl;
 }
@@ -95,9 +111,11 @@ void bar3(Computing &c, int x)
 void bar4(Computing &c, int x)
 {
 	cout<< "bar4 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+4)%24);
+	int val1 = c.access((x+4)%24);
+	cout << "Result of access to element #" << (x+4)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "bar4 finished" <<endl;
 }
@@ -105,9 +123,11 @@ void bar4(Computing &c, int x)
 void bar5(Computing &c, int x)
 {
 	cout<< "bar5 started " <<endl;
-	c.access(x);
+	int val = c.access(x);
+	cout << "Result of access to element #" << x << ":" << val << endl;
 	sleep(2);
-	c.access((x+4)%24);
+	int val1 = c.access((x+4)%24);
+	cout << "Result of access to element #" << (x+4)%24 << ":" << val << endl;
 	sleep(2);
 	cout << "bar5 finished" <<endl;
 }
