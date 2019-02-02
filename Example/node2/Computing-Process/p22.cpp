@@ -115,7 +115,7 @@ void bar5(Computing &c, int x)
 
 int main()
 {	
-	DataAdaptor da(3, 0, 24, "dataProcIPs.txt");	
+	DataAdaptor da(3, 1, 24, "dataProcIPs.txt");	
 	Computing c(da);	
 
 	vector<function<void()>> q1, q2;

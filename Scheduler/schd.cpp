@@ -1,7 +1,7 @@
 #include <iostream>
 #include <zmq.hpp>
-#include "../include/Message.h"
-#include "../include/Sender.h"
+#include "include/Sender.h"
+#include "include/Message.h"
 
 int main(){
 	
